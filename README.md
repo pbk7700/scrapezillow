@@ -1,4 +1,33 @@
-scratchquillow
+scrapezillow
 ==============
 
-Because Zillow is rate limited... yea its a Zillow scraper.
+Because the Zillow API is rate limited you can just scrape Zillow HTML to get what 
+you need. Combined with the undocumented Zillow GetResults API in `flowzillow` this can be a powerful
+tool to get all the information you need for home listings without directly going through MLS and 
+RETS.
+
+Usage
+-----
+It's easy.
+
+For the CLI if you know your zpid you can use
+
+    scrapezillow --zpid <zpid>
+
+If you know the URL you'd like to lookup
+
+    scrapezollow --url <url>
+
+And a bunch of results will be input to screen.
+
+For the API if you want to look a home up by zpid
+
+    from scrapezillow.scraper import scrape_url
+
+    results = scrape_url(None, <zpid>)
+
+If you'd like to look a home up by url
+
+    results = scrape_url(<url>, None)
+
+That should give you all the data you need. If not feel free to complain to me.

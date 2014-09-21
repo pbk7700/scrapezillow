@@ -5,7 +5,7 @@ __version__ = "0.1"
 
 
 setup(
-    name="scratchquillow",
+    name="scrapezillow",
     author="Gregory Rehm",
     version=__version__,
     description="A zillow scraper",
@@ -17,7 +17,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "scrapezillow=scratchquillow.main:main",
+            "scrapezillow=scrapezillow.main:main",
         ]
     }
 )
