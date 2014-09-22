@@ -16,7 +16,7 @@ For the CLI if you know your zpid you can use
 
 If you know the URL you'd like to lookup
 
-    scrapezollow --url <url>
+    scrapezillow --url <url>
 
 And a bunch of results will be input to screen.
 

@@ -8,6 +8,24 @@ import requests
 from scrapezillow import constants
 
 
+def _get_sale_info(soup):
+    sale_info = {}
+    value_wrapper = soup.find("div", id=constants.HOME_VALUE)
+    summary_rows = value_wrapper.find_all(class_=re.compile("home-summary-row"))
+    for row in summary_rows:
+        pricing_re = "(Foreclosure Estimate|Below Zestimate|Rent Zestimate|Zestimate|Sold on)(?:\xae)?:?[\n ]+\$?([\d,\/\w]+)"
+        pricing = re.findall(pricing_re, row.text)
+        status = re.findall("(For Sale|Auction|Make Me Move|For Rent|Pre-Foreclosure|Off Market)", row.text)
+        if pricing:
+            property_ = pricing[0][0].strip().replace(" ", "_").lower()
+            sale_info[str(property_)] = pricing[0][1]
+        elif status:
+            sale_info["status"] = status[0]
+        elif re.search("\$?[\d,]+", row.text):
+            sale_info["price"] = re.findall(r"\$?([\d,]+)", row.text)[0]
+    return sale_info
+
+
 def _get_property_summary(soup):
     def parse_property(regex, property_):
         try:
@@ -47,17 +65,15 @@ def _parse_facts(facts):
             parsed_facts["year"] = re.findall(r"Built in (\d+)", fact.text)[0]
         elif "days on Zillow" in fact.text:
             parsed_facts["days_on_zillow"] = re.findall(r"(\d+) days", fact.text)[0]
-        elif "View Virtual Tour" in fact.text:
-            continue
+        elif len(fact.text.split(":")) == 1:
+            if not "extras" in parsed_facts:
+                parsed_facts["extras"] = []
+            parsed_facts["extras"].append(fact.text)
         else:
             string = re.sub("( #|# )", "", fact.text)
             split = string.split(":")
             # Translate facts types to vars_with_underscores and convert unicode to string
-            try:
-                parsed_facts[str(split[0].strip().replace(" ", "_").lower())] = split[1].strip()
-            except Exception:
-                fact_text = [fact.text for fact in facts]
-                raise Exception("{}\n{}".format(split, "\n".join(fact_text)))
+            parsed_facts[str(split[0].strip().replace(" ", "_").lower())] = split[1].strip()
     return parsed_facts
 
 
@@ -99,5 +115,6 @@ def scrape_url(url, zpid, request_timeout):
     results = _get_property_summary(soup)
     facts = _parse_facts(_get_fact_list(soup))
     results.update(**facts)
+    results.update(**_get_sale_info(soup))
     results["description"] = _get_description(soup)
     return results
