@@ -15,4 +15,9 @@ setup(
         "beautifulsoup4",
         "requests"
     ],
+    entry_points={
+        "console_scripts": [
+            "scrapezillow=scratchquillow.main:main",
+        ]
+    }
 )
