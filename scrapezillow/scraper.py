@@ -39,26 +39,30 @@ def _get_fact_list(soup):
 
 
 def _parse_facts(facts):
-    fact_copy = list(facts)
     parsed_facts = {}
     for fact in facts:
         if fact.text in constants.HOME_TYPES:
             parsed_facts["home_type"] = fact.text
         elif "Built in" in fact.text:
             parsed_facts["year"] = re.findall(r"Built in (\d+)", fact.text)[0]
+        elif "days on Zillow" in fact.text:
+            parsed_facts["days_on_zillow"] = re.findall(r"(\d+) days", fact.text)[0]
+        elif "View Virtual Tour" in fact.text:
+            continue
         else:
             string = re.sub("( #|# )", "", fact.text)
             split = string.split(":")
-            # For debugging only right now
-            if len(split) != 2:
-                import pdb
-                pdb.set_trace()
-            parsed_facts[split[0].strip().replace(" ", "_").lower()] = split[1].strip()
+            # Translate facts types to vars_with_underscores and convert unicode to string
+            try:
+                parsed_facts[str(split[0].strip().replace(" ", "_").lower())] = split[1].strip()
+            except Exception:
+                fact_text = [fact.text for fact in facts]
+                raise Exception("{}\n{}".format(split, "\n".join(fact_text)))
     return parsed_facts
 
 
-def get_raw_html(url):
-    response = requests.get(url)
+def get_raw_html(url, timeout):
+    response = requests.get(url, timeout=timeout)
     if response.status_code != OK:
         raise Exception("You received a {} error. Your content {}".format(
             response.status_code, response.content
@@ -85,13 +89,13 @@ def validate_scraper_input(url, zpid):
     return url or urljoin(constants.ZILLOW_URL, "homedetails/{}_zpid".format(zpid))
 
 
-def scrape_url(url, zpid):
+def scrape_url(url, zpid, request_timeout):
     """
     Scrape a specific zillow home. Takes either a url or a zpid. If both/neither are
     specified this function will throw an error.
     """
     url = validate_scraper_input(url, zpid)
-    soup = BeautifulSoup(get_raw_html(url))
+    soup = BeautifulSoup(get_raw_html(url, request_timeout))
     results = _get_property_summary(soup)
     facts = _parse_facts(_get_fact_list(soup))
     results.update(**facts)
