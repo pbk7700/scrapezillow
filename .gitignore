@@ -55,3 +55,4 @@ target/
 
 # Whatever else
 *.html
+*.sw[op]

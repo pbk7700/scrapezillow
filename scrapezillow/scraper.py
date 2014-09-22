@@ -5,10 +5,10 @@ from bs4 import BeautifulSoup
 from httplib import OK
 import requests
 
-from scratchquillow import constants
+from scrapezillow import constants
 
 
-def _get_bed_bath_sqrft(soup):
+def _get_property_summary(soup):
     def parse_property(regex, property_):
         try:
             results[property_] = re.findall(regex, prop_summary)[0]
@@ -42,8 +42,7 @@ def _parse_facts(facts):
     fact_copy = list(facts)
     parsed_facts = {}
     for fact in facts:
-        # More home types to come
-        if fact.text in ("Single Family", "Condo"):
+        if fact.text in constants.HOME_TYPES:
             parsed_facts["home_type"] = fact.text
         elif "Built in" in fact.text:
             parsed_facts["year"] = re.findall(r"Built in (\d+)", fact.text)[0]
@@ -93,7 +92,7 @@ def scrape_url(url, zpid):
     """
     url = validate_scraper_input(url, zpid)
     soup = BeautifulSoup(get_raw_html(url))
-    results = _get_bed_bath_sqrft(soup)
+    results = _get_property_summary(soup)
     facts = _parse_facts(_get_fact_list(soup))
     results.update(**facts)
     results["description"] = _get_description(soup)

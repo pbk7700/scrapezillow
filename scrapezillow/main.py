@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
+from pprint import pprint
 
-from scratchquillow.scraper import scrape_url
+from scrapezillow.scraper import scrape_url
 
 
 def main():
@@ -9,4 +10,4 @@ def main():
     mutex.add_argument("--zpid")
     mutex.add_argument("--url")
     args = parser.parse_args()
-    print scrape_url(**args.__dict__)
+    pprint(scrape_url(**args.__dict__))
