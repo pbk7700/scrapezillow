@@ -17,9 +17,9 @@ def _get_property_summary(soup):
 
     prop_summary = soup.find("div", class_=constants.PROP_SUMMARY_CLASS).text
     results = {}
-    parse_property(r"(\d+) beds?", "bedrooms")
-    parse_property(r"(\d+) baths?", "bathrooms")
-    parse_property(r"(\d+,?\d+) sqft", "sqft")
+    parse_property(r"([\d\.]+) beds?", "bedrooms")
+    parse_property(r"([\d\.]+) baths?", "bathrooms")
+    parse_property(r"([\d,\.]+) sqft", "sqft")
     parse_property(r"((?:[A-Z]\w+ ?){1,}), [A-Z]{2}", "city")
     parse_property(r"(?:[A-Z]\w+ ?){1,}, ([A-Z]{2})", "state")
     parse_property(r"[A-Z]{2} (\d{5}-?(?:\d{4})?)", "zipcode")
