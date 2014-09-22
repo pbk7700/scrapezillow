@@ -24,10 +24,10 @@ For the API if you want to look a home up by zpid
 
     from scrapezillow.scraper import scrape_url
 
-    results = scrape_url(None, <zpid>)
+    results = scrape_url(None, <zpid>, <request timeout>)
 
 If you'd like to look a home up by url
 
-    results = scrape_url(<url>, None)
+    results = scrape_url(<url>, None, <request timeout>)
 
 That should give you all the data you need. If not feel free to complain to me.

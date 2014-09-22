@@ -9,5 +9,6 @@ def main():
     mutex = parser.add_mutually_exclusive_group(required=True)
     mutex.add_argument("--zpid")
     mutex.add_argument("--url")
+    parser.add_argument("-t", "--request-timeout", type=int)
     args = parser.parse_args()
     pprint(scrape_url(**args.__dict__))
