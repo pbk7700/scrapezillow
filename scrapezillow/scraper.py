@@ -13,7 +13,7 @@ def _get_sale_info(soup):
     value_wrapper = soup.find("div", id=constants.HOME_VALUE)
     summary_rows = value_wrapper.find_all(class_=re.compile("home-summary-row"))
     for row in summary_rows:
-        pricing_re = "(Foreclosure Estimate|Below Zestimate|Rent Zestimate|Zestimate|Sold on)(?:\xae)?:?[\n ]+\$?([\d,\/\w]+)"
+        pricing_re = "(Foreclosure Estimate|Below Zestimate|Rent Zestimate|Zestimate|Sold on|Sold)(?:\xae)?:?[\n ]+\$?([\d,\/\w]+)"
         pricing = re.findall(pricing_re, row.text)
         status = re.findall("(For Sale|Auction|Make Me Move|For Rent|Pre-Foreclosure|Off Market)", row.text)
         if pricing:
