@@ -6,6 +6,11 @@ you need. Combined with the undocumented Zillow GetResults API in `flowzillow` t
 tool to get all the information you need for home listings without directly going through MLS and 
 RETS.
 
+Installation
+------------
+
+    pip install scrapezillow
+
 Usage
 -----
 It's easy.
